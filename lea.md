@@ -1024,12 +1024,32 @@ OC 中对象内存管理： OC 中通过引用计数来管理对象的生命周�
 Dealloc ： 当类中包含有其它对象时，就需要通过重写 dealloc 函数 dealloc 这些对象。
 
 ```objective-c
+@interface Book : NSObject
+@property int page;
+@end
+
+@implementation Book
+@end
+
+@interface Person : NSObject
+@property (retain) Book *book;
+@end
+
 @implementation Person
 - (void)dealloc {
 	[_book release];
 	[super dealloc];
 }
 @end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person *p = [[Person alloc] init];
+        int c = (int)[p retainCount];
+        [p release];
+        p = nil; // 对象内存被释放后，将对象设置为nil，防止野指针错误。对象不能再用。
+    }
+}
 ```
 
 
